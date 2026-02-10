@@ -1,16 +1,17 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterModule],
   templateUrl: './login.html',
 })
 export class LoginComponent {
   private authService = inject(AuthService);
+  private router = inject(Router);
 
-  // En este login usaremos email + password
   email: string = '';
   password: string = '';
 
@@ -21,13 +22,8 @@ export class LoginComponent {
     };
 
     this.authService.login(credentials).subscribe({
-      next: (response) => {
-        console.log('Login exitoso:', response);
-        // Aquí más adelante puedes guardar el usuario/token y navegar
-      },
-      error: (error) => {
-        console.error('Error al iniciar sesión:', error);
-      },
+      next: () => this.router.navigate(['/home']),
+      error: (error) => console.error('Error al iniciar sesión:', error),
     });
   }
 }
