@@ -13,4 +13,9 @@ export class AuthService {
   register(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, userData);
   }
+
+  login(credentials: { username?: string; email?: string; password: string }): Observable<any> {
+    // El backend espera username y password; si usas email, ajusta el endpoint.
+    return this.http.post(`${this.apiUrl}/login`, credentials);
+  }
 }
