@@ -1,79 +1,16 @@
 <div class="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200">
-  <!-- Header -->
   <header class="bg-white/80 backdrop-blur-sm border-b border-slate-200 shadow-sm">
     <div class="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-slate-800">
-        <span class="text-blue-600">Tic</span><span class="text-slate-700">Tac</span><span class="text-blue-600">Toe</span>
-      </h1>
+      <a routerLink="/home" class="h1 text-2xl font-bold text-slate-800 cursor-pointer">
+        <span class="text-blue-600">Tic</span><span class="text-slate-700">Tac</span><span
+          class="text-blue-600">Toe</span>
+      </a>
+
+      <span *ngIf="user$ | async as user" class="text-sm text-slate-600">
+        Hola, <span class="font-semibold">{{ user.username }}</span>
+      </span>
     </div>
   </header>
 
-  <main class="max-w-md mx-auto px-4 py-10">
-    <p class="text-center text-slate-600 text-lg mb-8">
-      ¿Qué quieres hacer?
-    </p>
-
-    <div class="flex flex-col gap-4">
-      <!-- Jugar -->
-      <a
-        routerLink="/game"
-        class="block bg-white rounded-2xl p-6 shadow-lg border border-slate-100 hover:shadow-xl hover:border-blue-200 transition-all duration-200 group"
-      >
-        <div class="flex items-center gap-4">
-          <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-100 text-blue-600 text-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors">
-            ◉
-          </span>
-          <div class="flex-1">
-            <h2 class="font-semibold text-slate-800 text-lg">Jugar partida</h2>
-            <p class="text-sm text-slate-500">Crea una partida o únete a una existente</p>
-          </div>
-          <span class="text-slate-400 group-hover:text-blue-500">→</span>
-        </div>
-      </a>
-
-      <!-- Amigos -->
-      <a
-        routerLink="/friends"
-        class="block bg-white rounded-2xl p-6 shadow-lg border border-slate-100 hover:shadow-xl hover:border-blue-200 transition-all duration-200 group"
-      >
-        <div class="flex items-center gap-4">
-          <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-amber-100 text-amber-600 text-2xl group-hover:bg-amber-500 group-hover:text-white transition-colors">
-            ♥
-          </span>
-          <div class="flex-1">
-            <h2 class="font-semibold text-slate-800 text-lg">Amigos</h2>
-            <p class="text-sm text-slate-500">Gestiona tu lista de amigos</p>
-          </div>
-          <span class="text-slate-400 group-hover:text-amber-500">→</span>
-        </div>
-      </a>
-
-      <!-- Perfil -->
-      <a
-        routerLink="/profile"
-        class="block bg-white rounded-2xl p-6 shadow-lg border border-slate-100 hover:shadow-xl hover:border-blue-200 transition-all duration-200 group"
-      >
-        <div class="flex items-center gap-4">
-          <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 text-2xl group-hover:bg-emerald-500 group-hover:text-white transition-colors">
-            👤
-          </span>
-          <div class="flex-1">
-            <h2 class="font-semibold text-slate-800 text-lg">Perfil</h2>
-            <p class="text-sm text-slate-500">Ver y editar tu perfil</p>
-          </div>
-          <span class="text-slate-400 group-hover:text-emerald-500">→</span>
-        </div>
-      </a>
-    </div>
-
-    <!-- Cerrar sesión -->
-    <div class="mt-10 pt-6 border-t border-slate-200">
-      <a
-        routerLink="/login"
-        class="block w-full text-center py-3 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition-colors font-medium"
-      >
-        Cerrar sesión
-      </a>
-    </div>
-  </main>
+  <router-outlet></router-outlet>
 </div>
