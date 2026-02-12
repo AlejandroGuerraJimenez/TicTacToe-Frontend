@@ -1,27 +1,60 @@
-import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { GamesService } from '../../services/games.service';
+import { RealtimeService } from '../../services/realtime.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-games',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './games.html',
 })
-export class GamesComponent implements OnInit {
+export class GamesComponent implements OnInit, OnDestroy {
   private gamesService = inject(GamesService);
+  private realtime = inject(RealtimeService);
   private cdr = inject(ChangeDetectorRef);
+  private ngZone = inject(NgZone);
+  private eventsSub?: Subscription;
 
   games: any[] = [];
   invitations: any[] = [];
   targetUsername = '';
   message = '';
   error = '';
+  gameMoveNotification = '';
   activeTab: 'games' | 'requests' | 'invite' = 'games';
+
+  get pendingGames(): any[] {
+    return this.games.filter((g) => g.status === 'ACTIVE' && g.playerTurn === g.mySymbol);
+  }
+
+  get otherGames(): any[] {
+    return this.games.filter((g) => !(g.status === 'ACTIVE' && g.playerTurn === g.mySymbol));
+  }
 
   ngOnInit() {
     this.loadGames();
     this.loadInvitations();
+    this.realtime.connect();
+    this.eventsSub = this.realtime.events$.subscribe((ev) => {
+      this.ngZone.run(() => {
+        if (ev.event === 'game_move') {
+          this.gameMoveNotification = `¡${ev.data.opponentUsername} ha jugado! Actualizando...`;
+          this.loadGames();
+          this.cdr.detectChanges();
+          setTimeout(() => {
+            this.gameMoveNotification = '';
+            this.cdr.detectChanges();
+          }, 4000);
+        }
+      });
+    });
+  }
+
+  ngOnDestroy() {
+    this.eventsSub?.unsubscribe();
   }
 
   loadGames() {

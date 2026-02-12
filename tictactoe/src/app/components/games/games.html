@@ -1,5 +1,5 @@
 <div class="max-w-2xl mx-auto p-4">
-  <h2 class="text-2xl font-bold text-slate-800 mb-6">Juegos</h2>
+  <h2 class="text-2xl font-bold text-slate-800 mb-6">Jugar partida</h2>
 
   <!-- Tabs -->
   <div class="flex space-x-1 bg-slate-100 p-1 rounded-xl mb-6">
@@ -40,37 +40,77 @@
   <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
     <!-- Juegos iniciados -->
     <div *ngIf="activeTab === 'games'">
+      <div *ngIf="gameMoveNotification" class="mb-4 p-3 bg-blue-50 text-blue-700 rounded-lg text-sm">
+        {{ gameMoveNotification }}
+      </div>
       <div *ngIf="message" class="mb-4 p-3 bg-green-50 text-green-600 rounded-lg text-sm">{{ message }}</div>
       <div *ngIf="error" class="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">{{ error }}</div>
       <div *ngIf="games.length === 0" class="text-center py-8 text-slate-500">
         No tienes partidas aún.
       </div>
-      <ul *ngIf="games.length > 0" class="space-y-4">
-        <li
-          *ngFor="let game of games"
-          class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
-          <div class="flex items-center space-x-3">
-            <div
-              class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold">
-              {{ game.opponentUsername?.charAt(0)?.toUpperCase() || '?' }}
+
+      <!-- Juegos pendientes (tu turno) -->
+      <div *ngIf="pendingGames.length > 0" class="mb-6">
+        <h3 class="text-sm font-semibold text-slate-600 mb-3">Tu turno</h3>
+        <ul class="space-y-3">
+          <li
+            *ngFor="let game of pendingGames"
+            class="flex items-center justify-between p-3 bg-amber-50 border border-amber-100 rounded-xl">
+            <div class="flex items-center space-x-3">
+              <div
+                class="w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center font-bold">
+                {{ game.opponentUsername?.charAt(0)?.toUpperCase() || '?' }}
+              </div>
+              <div>
+                <p class="font-medium text-slate-800">vs {{ game.opponentUsername }}</p>
+                <p class="text-xs text-amber-600">Tú eres {{ game.mySymbol }} · Es tu turno</p>
+              </div>
             </div>
-            <div>
-              <p class="font-medium text-slate-800">vs {{ game.opponentUsername }}</p>
-              <p class="text-xs text-slate-500">
-                {{ statusLabel(game.status) }} · Tú eres {{ game.mySymbol }}
-              </p>
+            <a
+              [routerLink]="['/home/games', game.id]"
+              class="bg-amber-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-amber-600 transition-colors">
+              Jugar
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Resto de partidas -->
+      <div *ngIf="otherGames.length > 0">
+        <h3 class="text-sm font-semibold text-slate-600 mb-3">
+          {{ pendingGames.length > 0 ? 'Otras partidas' : 'Partidas' }}
+        </h3>
+        <ul class="space-y-3">
+          <li
+            *ngFor="let game of otherGames"
+            class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+            <div class="flex items-center space-x-3">
+              <div
+                class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold">
+                {{ game.opponentUsername?.charAt(0)?.toUpperCase() || '?' }}
+              </div>
+              <div>
+                <p class="font-medium text-slate-800">vs {{ game.opponentUsername }}</p>
+                <p class="text-xs text-slate-500">
+                  {{ statusLabel(game.status) }} · Tú eres {{ game.mySymbol }}
+                </p>
+              </div>
             </div>
-          </div>
-          <span
-            class="text-xs px-2 py-1 rounded-full"
-            [class.bg-emerald-100]="game.status === 'ACTIVE'"
-            [class.text-emerald-700]="game.status === 'ACTIVE'"
-            [class.bg-slate-100]="game.status !== 'ACTIVE'"
-            [class.text-slate-600]="game.status !== 'ACTIVE'">
-            {{ statusLabel(game.status) }}
-          </span>
-        </li>
-      </ul>
+            <span
+              *ngIf="game.status === 'ACTIVE'"
+              class="text-xs text-slate-500">Esperando al rival</span>
+            <a
+              *ngIf="game.status === 'ACTIVE'"
+              [routerLink]="['/home/games', game.id]"
+              class="text-blue-600 text-sm hover:underline">Ver</a>
+            <span
+              *ngIf="game.status !== 'ACTIVE'"
+              class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-600">
+              {{ statusLabel(game.status) }}
+            </span>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <!-- Solicitudes de juego -->

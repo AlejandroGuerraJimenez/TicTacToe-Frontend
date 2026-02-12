@@ -28,4 +28,12 @@ export class GamesService {
   rejectInvitation(invitationId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/invitations/${invitationId}/reject`, {}, { withCredentials: true });
   }
+
+  getGame(gameId: number): Observable<{ success: boolean; game: any }> {
+    return this.http.get<{ success: boolean; game: any }>(`${this.apiUrl}/${gameId}`, { withCredentials: true });
+  }
+
+  makeMove(gameId: number, position: number): Observable<{ success: boolean; game: any }> {
+    return this.http.post<{ success: boolean; game: any }>(`${this.apiUrl}/${gameId}/move`, { position }, { withCredentials: true });
+  }
 }

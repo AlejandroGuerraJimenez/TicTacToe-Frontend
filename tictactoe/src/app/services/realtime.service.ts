@@ -6,7 +6,8 @@ export type RealtimeEvent =
   | { event: 'friend_request'; data: { senderId: number; senderName: string } }
   | { event: 'friend_accepted'; data: { userId: number; username: string } }
   | { event: 'friend_rejected'; data: { userId: number; username: string } }
-  | { event: 'friend_removed'; data: { userId: number } };
+  | { event: 'friend_removed'; data: { userId: number } }
+  | { event: 'game_move'; data: { gameId: number; opponentUsername: string } };
 
 @Injectable({
   providedIn: 'root'

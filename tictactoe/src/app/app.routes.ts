@@ -17,6 +17,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'friends', loadComponent: () => import('./components/friends/friends').then(m => m.FriendsComponent) },
+      { path: 'games/:id', loadComponent: () => import('./components/game-play/game-play').then(m => m.GamePlayComponent) },
       { path: 'games', loadComponent: () => import('./components/games/games').then(m => m.GamesComponent) },
     ]
   },
