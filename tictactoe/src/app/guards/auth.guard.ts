@@ -1,17 +1,20 @@
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { RealtimeService } from '../services/realtime.service';
 import { take, tap } from 'rxjs/operators';
 
 export const authGuard: CanActivateFn = (_route, state) => {
     const authService = inject(AuthService);
     const router = inject(Router);
+    const realtime = inject(RealtimeService);
 
     console.log('AuthGuard activating for route:', state.url);
 
-    // 1. Si ya tenemos usuario en estado local, permitimos acceso
+    // 1. Si ya tenemos usuario en estado local, permitimos acceso y aseguramos WebSocket
     if (authService.isAuthenticated()) {
         console.log('AuthGuard: User authenticated locally');
+        realtime.connect(); // Asegurar que WS esté conectado (idempotente)
         return true;
     }
 

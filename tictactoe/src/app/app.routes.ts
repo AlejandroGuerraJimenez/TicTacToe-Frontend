@@ -3,22 +3,20 @@ import { RegisterComponent } from './components/register/register';
 import { LoginComponent } from './components/login/login';
 import { HomeComponent } from './components/home/home';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { PlaceholderComponent } from './components/placeholder/placeholder';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   {
     path: 'home',
     component: HomeComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', component: DashboardComponent },
-      { path: 'game', component: PlaceholderComponent, data: { label: 'Juego — Próximamente' } },
-      { path: 'friends', component: PlaceholderComponent, data: { label: 'Amigos — Próximamente' } },
-      { path: 'profile', component: PlaceholderComponent, data: { label: 'Perfil — Próximamente' } },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'friends', loadComponent: () => import('./components/friends/friends').then(m => m.FriendsComponent) },
     ]
   },
-  { path: 'register', component: RegisterComponent },
-  { path: 'login', component: LoginComponent },
 ];
