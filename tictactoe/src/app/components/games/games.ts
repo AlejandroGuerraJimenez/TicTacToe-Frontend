@@ -23,7 +23,6 @@ export class GamesComponent implements OnInit, OnDestroy {
   targetUsername = '';
   message = '';
   error = '';
-  gameMoveNotification = '';
   activeTab: 'games' | 'requests' | 'invite' = 'games';
 
   get pendingGames(): any[] {
@@ -41,13 +40,16 @@ export class GamesComponent implements OnInit, OnDestroy {
     this.eventsSub = this.realtime.events$.subscribe((ev) => {
       this.ngZone.run(() => {
         if (ev.event === 'game_move') {
-          this.gameMoveNotification = `¡${ev.data.opponentUsername} ha jugado! Actualizando...`;
           this.loadGames();
           this.cdr.detectChanges();
-          setTimeout(() => {
-            this.gameMoveNotification = '';
-            this.cdr.detectChanges();
-          }, 4000);
+        }
+        if (ev.event === 'game_invitation') {
+          this.loadInvitations();
+          this.cdr.detectChanges();
+        }
+        if (ev.event === 'game_invitation_accepted') {
+          this.loadGames();
+          this.cdr.detectChanges();
         }
       });
     });
