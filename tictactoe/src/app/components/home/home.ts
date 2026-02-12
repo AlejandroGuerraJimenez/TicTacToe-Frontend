@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, NgZone, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -20,13 +20,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   private realtime = inject(RealtimeService);
   private toast = inject(ToastService);
   private ngZone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
   private eventsSub?: Subscription;
+  private userSub?: Subscription;
   private lastToastKey = new Map<string, number>();
 
-  user$ = this.authService.currentUser$;
+  user: { id: number; username: string; email: string } | null = null;
 
   ngOnInit(): void {
     this.realtime.connect();
+    this.userSub = this.authService.currentUser$.subscribe((u) => {
+      this.user = u;
+      this.cdr.markForCheck();
+    });
     this.eventsSub = this.realtime.events$.subscribe((ev) => {
       this.ngZone.run(() => this.handleRealtimeEvent(ev));
     });
@@ -34,6 +40,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.eventsSub?.unsubscribe();
+    this.userSub?.unsubscribe();
   }
 
   private shouldShowToast(key: string): boolean {
