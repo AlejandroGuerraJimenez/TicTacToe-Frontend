@@ -37,8 +37,8 @@ export class GamesService {
     return this.http.post<{ success: boolean; game: any }>(`${this.apiUrl}/${gameId}/move`, { position }, { withCredentials: true });
   }
 
-  getGameChat(gameId: number): Observable<{ success: boolean; chatId: number; opponentUsername: string; messages: any[] }> {
-    return this.http.get<{ success: boolean; chatId: number; opponentUsername: string; messages: any[] }>(
+  getGameChat(gameId: number): Observable<{ success: boolean; chatId: number; opponentUsername: string; messages: any[]; otherLastReadAt: string | null }> {
+    return this.http.get<{ success: boolean; chatId: number; opponentUsername: string; messages: any[]; otherLastReadAt: string | null }>(
       `${this.apiUrl}/${gameId}/chat`,
       { withCredentials: true }
     );

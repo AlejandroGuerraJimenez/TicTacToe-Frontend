@@ -10,7 +10,8 @@ export type RealtimeEvent =
   | { event: 'game_move'; data: { gameId: number; opponentUsername: string } }
   | { event: 'game_invitation'; data: { senderId: number; senderName: string } }
   | { event: 'game_invitation_accepted'; data: { gameId: number; opponentUsername: string } }
-  | { event: 'chat_message'; data: { gameId: number; message: { id: number; content: string; createdAt: string; senderUsername: string; isMine: boolean } } };
+  | { event: 'chat_message'; data: { gameId: number; message: { id: number; content: string; createdAt: string; senderUsername: string; isMine: boolean } } }
+  | { event: 'chat_read'; data: { gameId: number; readAt: string } };
 
 @Injectable({
   providedIn: 'root'

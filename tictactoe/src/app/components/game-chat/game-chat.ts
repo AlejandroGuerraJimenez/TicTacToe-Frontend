@@ -33,6 +33,7 @@ export class GameChatComponent implements OnInit, OnDestroy {
 
   expanded = false;
   messages: { id: number; content: string; createdAt: string; senderUsername: string; isMine: boolean }[] = [];
+  otherLastReadAt: string | null = null;
   newMessage = '';
   loading = true;
   sending = false;
@@ -49,6 +50,10 @@ export class GameChatComponent implements OnInit, OnDestroy {
           this.scrollToBottom();
         }
       }
+      if (ev.event === 'chat_read' && ev.data.gameId === this.gameId) {
+        this.otherLastReadAt = ev.data.readAt;
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -56,13 +61,14 @@ export class GameChatComponent implements OnInit, OnDestroy {
     this.eventsSub?.unsubscribe();
   }
 
-  loadChat() {
-    this.loading = true;
+  loadChat(silent = false) {
+    if (!silent) this.loading = true;
     this.error = '';
     this.gamesService.getGameChat(this.gameId).subscribe({
       next: (res) => {
         this.messages = res.messages ?? [];
         this.opponentUsername = res.opponentUsername ?? this.opponentUsername;
+        this.otherLastReadAt = res.otherLastReadAt ?? null;
         this.loading = false;
         this.cdr.detectChanges();
         this.scrollToBottom();
@@ -96,6 +102,15 @@ export class GameChatComponent implements OnInit, OnDestroy {
 
   openPanel() {
     this.expanded = true;
+    this.loadChat(this.messages.length > 0);
+  }
+
+  isMessageRead(m: { createdAt: string | Date; isMine: boolean }): boolean {
+    if (!m.isMine || !this.otherLastReadAt) return false;
+    const msgAt = new Date(m.createdAt).getTime();
+    const readAt = new Date(this.otherLastReadAt).getTime();
+    if (Number.isNaN(msgAt) || Number.isNaN(readAt)) return false;
+    return msgAt <= readAt;
   }
 
   close() {

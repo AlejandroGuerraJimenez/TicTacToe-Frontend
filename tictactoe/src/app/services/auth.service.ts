@@ -71,10 +71,19 @@ export class AuthService {
   }
 
   me(): Observable<any> {
-    console.log('Calling me() endpoint directly');
     return this.http.get(`${this.apiUrl}/me`, {
       withCredentials: true,
     });
+  }
+
+  updateProfile(profile: { username?: string; email?: string }): Observable<{ success: boolean; user?: any; error?: string }> {
+    return this.http.patch<{ success: boolean; user?: any; error?: string }>(`${this.apiUrl}/me`, profile, {
+      withCredentials: true,
+    }).pipe(
+      tap((res) => {
+        if (res.success && res.user) this.currentUserSubject.next(res.user);
+      })
+    );
   }
 
   logout(): Observable<any> {

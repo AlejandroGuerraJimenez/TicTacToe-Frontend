@@ -95,12 +95,12 @@
 
         <!-- Add Friend Form -->
         <div *ngIf="activeTab === 'add'">
-            <div class="max-w-sm mx-auto">
+            <form class="max-w-sm mx-auto" (ngSubmit)="sendRequest()">
                 <label class="block text-sm font-medium text-slate-700 mb-2">Nombre de usuario</label>
                 <div class="flex space-x-2">
-                    <input [(ngModel)]="targetUsername" type="text" placeholder="Ej: usuario123"
+                    <input [(ngModel)]="targetUsername" name="targetUsername" type="text" placeholder="Ej: usuario123"
                         class="flex-1 px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
-                    <button (click)="sendRequest()" [disabled]="!targetUsername"
+                    <button type="submit" [disabled]="!targetUsername"
                         class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                         Enviar
                     </button>
@@ -112,7 +112,7 @@
                 <div *ngIf="error" class="mt-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm text-center">
                     {{ error }}
                 </div>
-            </div>
+            </form>
         </div>
 
     </div>

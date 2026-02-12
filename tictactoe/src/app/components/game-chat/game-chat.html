@@ -50,6 +50,7 @@
           [class.border-slate-200]="!m.isMine">
           <span *ngIf="!m.isMine" class="text-xs text-slate-500 block mb-0.5">{{ m.senderUsername }}</span>
           <span>{{ m.content }}</span>
+          <span *ngIf="m.isMine && isMessageRead(m)" class="block mt-1 text-xs opacity-90">Leído</span>
         </div>
       </div>
     </div>

@@ -19,6 +19,7 @@ export const routes: Routes = [
       { path: 'friends', loadComponent: () => import('./components/friends/friends').then(m => m.FriendsComponent) },
       { path: 'games/:id', loadComponent: () => import('./components/game-play/game-play').then(m => m.GamePlayComponent) },
       { path: 'games', loadComponent: () => import('./components/games/games').then(m => m.GamesComponent) },
+      { path: 'profile', loadComponent: () => import('./components/profile/profile').then(m => m.ProfileComponent) },
     ]
   },
 ];
