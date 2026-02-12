@@ -9,31 +9,44 @@
         Inicia sesión en <span class="text-blue-600">TicTacToe</span>
       </h2>
 
+      <div *ngIf="error" class="p-3 rounded-lg bg-red-50 text-red-700 text-sm" role="alert">
+        {{ error }}
+      </div>
       <div class="flex flex-col gap-4">
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          class="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          [(ngModel)]="email"
-          name="email"
-          required
-        />
-
-        <input
-          type="password"
-          placeholder="Contraseña"
-          class="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          [(ngModel)]="password"
-          name="password"
-          required
-        />
+        <div>
+          <input
+            type="email"
+            placeholder="Correo electrónico"
+            class="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            [class.border-gray-300]="!emailError"
+            [class.border-red-500]="emailError"
+            [(ngModel)]="email"
+            name="email"
+            required
+          />
+          <p *ngIf="emailError" class="mt-1 text-sm text-red-600">{{ emailError }}</p>
+        </div>
+        <div>
+          <input
+            type="password"
+            placeholder="Contraseña"
+            class="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            [class.border-gray-300]="!passwordError"
+            [class.border-red-500]="passwordError"
+            [(ngModel)]="password"
+            name="password"
+            required
+          />
+          <p *ngIf="passwordError" class="mt-1 text-sm text-red-600">{{ passwordError }}</p>
+        </div>
       </div>
 
       <button
         type="submit"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 ease-in-out transform hover:scale-105"
+        [disabled]="loading"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 ease-in-out disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
       >
-        Iniciar sesión
+        {{ loading ? 'Iniciando sesión...' : 'Iniciar sesión' }}
       </button>
 
       <p class="text-center text-sm text-gray-600 mt-2">
