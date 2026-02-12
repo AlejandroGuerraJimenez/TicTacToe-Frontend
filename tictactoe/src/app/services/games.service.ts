@@ -36,4 +36,19 @@ export class GamesService {
   makeMove(gameId: number, position: number): Observable<{ success: boolean; game: any }> {
     return this.http.post<{ success: boolean; game: any }>(`${this.apiUrl}/${gameId}/move`, { position }, { withCredentials: true });
   }
+
+  getGameChat(gameId: number): Observable<{ success: boolean; chatId: number; opponentUsername: string; messages: any[] }> {
+    return this.http.get<{ success: boolean; chatId: number; opponentUsername: string; messages: any[] }>(
+      `${this.apiUrl}/${gameId}/chat`,
+      { withCredentials: true }
+    );
+  }
+
+  sendChatMessage(gameId: number, content: string): Observable<{ success: boolean; message: any }> {
+    return this.http.post<{ success: boolean; message: any }>(
+      `${this.apiUrl}/${gameId}/chat/messages`,
+      { content },
+      { withCredentials: true }
+    );
+  }
 }

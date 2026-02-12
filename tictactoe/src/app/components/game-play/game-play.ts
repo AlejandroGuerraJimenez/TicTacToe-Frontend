@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { GamesService } from '../../services/games.service';
 import { RealtimeService } from '../../services/realtime.service';
+import { GameChatComponent } from '../game-chat/game-chat';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-game-play',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, GameChatComponent],
   templateUrl: './game-play.html',
 })
 export class GamePlayComponent implements OnInit, OnDestroy {
@@ -107,6 +108,8 @@ export class GamePlayComponent implements OnInit, OnDestroy {
   back() {
     this.router.navigate(['/home/games']);
   }
+
+  closeChat = (): void => {};
 
   statusMessage(): string {
     if (!this.game) return '';

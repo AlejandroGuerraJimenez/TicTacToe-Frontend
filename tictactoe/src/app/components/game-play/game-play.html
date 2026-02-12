@@ -39,4 +39,10 @@
       </button>
     </div>
   </div>
+
+  <app-game-chat
+    *ngIf="gameId && game && game.status === 'ACTIVE'"
+    [gameId]="gameId"
+    [opponentUsername]="game.opponentUsername"
+    [onClose]="closeChat" />
 </div>

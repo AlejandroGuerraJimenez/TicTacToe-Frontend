@@ -63,11 +63,13 @@
                 <p class="text-xs text-amber-600">Tú eres {{ game.mySymbol }} · Es tu turno</p>
               </div>
             </div>
-            <a
-              [routerLink]="['/home/games', game.id]"
-              class="bg-amber-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-amber-600 transition-colors">
-              Jugar
-            </a>
+            <div class="flex items-center gap-2">
+              <a
+                [routerLink]="['/home/games', game.id]"
+                class="bg-amber-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-amber-600 transition-colors">
+                Jugar
+              </a>
+            </div>
           </li>
         </ul>
       </div>
@@ -96,10 +98,12 @@
             <span
               *ngIf="game.status === 'ACTIVE'"
               class="text-xs text-slate-500">Esperando al rival</span>
-            <a
-              *ngIf="game.status === 'ACTIVE'"
-              [routerLink]="['/home/games', game.id]"
-              class="text-blue-600 text-sm hover:underline">Ver</a>
+            <div class="flex items-center gap-2">
+              <a
+                *ngIf="game.status === 'ACTIVE'"
+                [routerLink]="['/home/games', game.id]"
+                class="text-blue-600 text-sm hover:underline">Ver</a>
+            </div>
             <span
               *ngIf="game.status !== 'ACTIVE'"
               class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-600">
@@ -171,4 +175,5 @@
       </div>
     </div>
   </div>
+
 </div>
