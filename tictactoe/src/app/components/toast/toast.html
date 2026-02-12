@@ -1,0 +1,36 @@
+<div
+  class="fixed top-4 right-4 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none"
+  aria-live="polite">
+  <div
+    *ngFor="let toast of toastService.toasts$ | async; trackBy: trackById"
+    class="pointer-events-auto rounded-xl shadow-lg border p-4 flex items-start gap-3 transition-all duration-200"
+    [class.bg-emerald-50]="toast.type === 'success'"
+    [class.border-emerald-200]="toast.type === 'success'"
+    [class.text-emerald-800]="toast.type === 'success'"
+    [class.bg-red-50]="toast.type === 'error'"
+    [class.border-red-200]="toast.type === 'error'"
+    [class.text-red-800]="toast.type === 'error'"
+    [class.bg-sky-50]="toast.type === 'info'"
+    [class.border-sky-200]="toast.type === 'info'"
+    [class.text-sky-800]="toast.type === 'info'">
+    <span
+      class="shrink-0 mt-0.5"
+      [class.text-emerald-500]="toast.type === 'success'"
+      [class.text-red-500]="toast.type === 'error'"
+      [class.text-sky-500]="toast.type === 'info'">
+      <ng-container *ngIf="toast.type === 'success'">✓</ng-container>
+      <ng-container *ngIf="toast.type === 'error'">✕</ng-container>
+      <ng-container *ngIf="toast.type === 'info'">ℹ</ng-container>
+    </span>
+    <p class="flex-1 text-sm font-medium">{{ toast.message }}</p>
+    <button
+      type="button"
+      (click)="dismiss(toast.id)"
+      class="shrink-0 p-1 rounded-md opacity-70 hover:opacity-100 transition-opacity"
+      aria-label="Cerrar">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 6L6 18M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+</div>

@@ -30,7 +30,6 @@ export class FriendsComponent implements OnInit, OnDestroy {
     this.realtime.connect();
     this.eventsSub = this.realtime.events$.subscribe((msg) => {
       this.ngZone.run(() => {
-        console.log('[Friends] Evento realtime:', msg.event);
         if (msg.event === 'friend_request') this.loadRequests();
         if (msg.event === 'friend_accepted' || msg.event === 'friend_rejected') {
           this.loadRequests();
