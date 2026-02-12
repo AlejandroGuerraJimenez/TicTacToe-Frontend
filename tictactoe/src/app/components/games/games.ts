@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { GamesService } from '../../services/games.service';
 import { RealtimeService } from '../../services/realtime.service';
 import { Subscription } from 'rxjs';
@@ -16,6 +16,7 @@ export class GamesComponent implements OnInit, OnDestroy {
   private realtime = inject(RealtimeService);
   private cdr = inject(ChangeDetectorRef);
   private ngZone = inject(NgZone);
+  private router = inject(Router);
   private eventsSub?: Subscription;
 
   games: any[] = [];
@@ -24,6 +25,7 @@ export class GamesComponent implements OnInit, OnDestroy {
   message = '';
   error = '';
   activeTab: 'games' | 'requests' | 'invite' = 'games';
+  showNotFriendModal = false;
 
   get pendingGames(): any[] {
     return this.games.filter((g) => g.status === 'ACTIVE' && g.playerTurn === g.mySymbol);
@@ -90,15 +92,32 @@ export class GamesComponent implements OnInit, OnDestroy {
   sendInvite() {
     this.message = '';
     this.error = '';
+    this.showNotFriendModal = false;
     this.gamesService.sendInvite(this.targetUsername).subscribe({
       next: () => {
         this.message = 'Invitación enviada';
         this.targetUsername = '';
       },
       error: (err) => {
-        this.error = err.error?.error || 'Error al enviar invitación';
+        if (err.error?.code === 'NOT_FRIEND') {
+          this.showNotFriendModal = true;
+          this.error = '';
+        } else {
+          this.error = err.error?.error || 'Error al enviar invitación';
+        }
+        this.cdr.detectChanges();
       },
     });
+  }
+
+  goToAddFriend() {
+    this.showNotFriendModal = false;
+    this.router.navigate(['/home/friends']);
+  }
+
+  closeNotFriendModal() {
+    this.showNotFriendModal = false;
+    this.cdr.detectChanges();
   }
 
   acceptInvitation(id: number) {
@@ -118,12 +137,12 @@ export class GamesComponent implements OnInit, OnDestroy {
     });
   }
 
-  statusLabel(status: string): string {
-    const labels: Record<string, string> = {
-      ACTIVE: 'En curso',
-      FINISHED: 'Finalizada',
-      DRAW: 'Empate',
-    };
-    return labels[status] || status;
+  statusLabel(game: { status: string; youWon?: boolean }): string {
+    if (game.status === 'ACTIVE') return 'En curso';
+    if (game.status === 'DRAW') return 'Empate';
+    if (game.status === 'FINISHED') {
+      return game.youWon ? 'Victoria' : 'Derrota';
+    }
+    return game.status;
   }
 }

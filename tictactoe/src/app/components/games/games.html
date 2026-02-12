@@ -91,7 +91,7 @@
               <div>
                 <p class="font-medium text-slate-800">vs {{ game.opponentUsername }}</p>
                 <p class="text-xs text-slate-500">
-                  {{ statusLabel(game.status) }} · Tú eres {{ game.mySymbol }}
+                  {{ statusLabel(game) }} · Tú eres {{ game.mySymbol }}
                 </p>
               </div>
             </div>
@@ -106,8 +106,14 @@
             </div>
             <span
               *ngIf="game.status !== 'ACTIVE'"
-              class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-600">
-              {{ statusLabel(game.status) }}
+              class="text-xs px-2 py-1 rounded-full"
+              [class.bg-green-100]="game.status === 'FINISHED' && game.youWon"
+              [class.text-green-700]="game.status === 'FINISHED' && game.youWon"
+              [class.bg-red-100]="game.status === 'FINISHED' && !game.youWon"
+              [class.text-red-700]="game.status === 'FINISHED' && !game.youWon"
+              [class.bg-slate-100]="game.status === 'DRAW'"
+              [class.text-slate-600]="game.status === 'DRAW'">
+              {{ statusLabel(game) }}
             </span>
           </li>
         </ul>
@@ -176,4 +182,30 @@
     </div>
   </div>
 
+  <!-- Popup: solo puedes jugar con amigos -->
+  <div
+    *ngIf="showNotFriendModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+    (click)="closeNotFriendModal()">
+    <div
+      class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center"
+      (click)="$event.stopPropagation()">
+      <p class="text-slate-800 font-medium mb-2">Solo puedes jugar con amigos</p>
+      <p class="text-slate-500 text-sm mb-6">Añade a {{ targetUsername || 'este usuario' }} como amigo para poder invitarle a una partida.</p>
+      <div class="flex gap-3 justify-center">
+        <button
+          type="button"
+          (click)="closeNotFriendModal()"
+          class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">
+          Cerrar
+        </button>
+        <button
+          type="button"
+          (click)="goToAddFriend()"
+          class="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+          Ir a Añadir amigo
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
