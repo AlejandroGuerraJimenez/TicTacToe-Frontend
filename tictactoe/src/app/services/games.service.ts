@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class GamesService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/games';
+  private apiUrl = 'http://tictactoe-backend-production-8a7e.up.railway.app';
 
   getGames(): Observable<{ success: boolean; games: any[] }> {
     return this.http.get<{ success: boolean; games: any[] }>(`${this.apiUrl}`, { withCredentials: true });

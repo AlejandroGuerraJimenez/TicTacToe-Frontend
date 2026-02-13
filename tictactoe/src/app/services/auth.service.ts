@@ -9,7 +9,7 @@ import { RealtimeService } from './realtime.service';
 export class AuthService {
   private http = inject(HttpClient);
   private realtime = inject(RealtimeService);
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'http://tictactoe-backend-production-8a7e.up.railway.app';
   private currentUserSubject = new BehaviorSubject<any>(null);
   /** Signal reactivo: la vista se actualiza al cambiar (p. ej. tras checkSession al recargar). */
   private currentUserSignal = signal<any>(null);
