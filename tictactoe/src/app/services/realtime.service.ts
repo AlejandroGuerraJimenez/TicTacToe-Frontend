@@ -19,7 +19,7 @@ export type RealtimeEvent =
 export class RealtimeService {
   private http = inject(HttpClient);
   private ngZone = inject(NgZone);
-  private apiUrl = 'http://tictactoe-backend-production-8a7e.up.railway.app';
+  private apiUrl = 'https://tictactoe-backend-production-8a7e.up.railway.app';
   private ws: WebSocket | null = null;
   private readonly eventsSubject = new Subject<RealtimeEvent>();
 
