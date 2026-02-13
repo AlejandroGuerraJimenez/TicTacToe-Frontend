@@ -12,23 +12,24 @@ RUN npm ci
 # Copiar código fuente
 COPY . .
 
-# Build de producción (genera browser + server SSR)
+# Build de producción (genera archivos estáticos)
 RUN npm run build
 
 # Stage 2: Run
-FROM node:20-alpine AS run
+FROM nginx:alpine AS run
 
-WORKDIR /app
+# Copiar archivos estáticos build al directorio de nginx
+COPY --from=build /app/dist/tictactoe/browser /usr/share/nginx/html
 
-# Solo lo necesario para ejecutar el server SSR
-COPY --from=build /app/dist/tictactoe ./dist/tictactoe
-COPY --from=build /app/package.json /app/package-lock.json ./
+# Configuración básica de nginx para SPA
+RUN echo 'server { \
+    listen 8080; \
+    location / { \
+        root /usr/share/nginx/html; \
+        try_files $uri $uri/ /index.html; \
+    } \
+}' > /etc/nginx/conf.d/default.conf
 
-# Dependencias de producción para el server (express está en dependencies)
-RUN npm ci --omit=dev
-
-# Railway inyecta PORT en runtime; el server de Angular SSR lo usa por defecto
-ENV NODE_ENV=production
 EXPOSE 8080
 
-CMD ["node", "dist/tictactoe/server/server.mjs"]
+CMD ["nginx", "-g", "daemon off;"]
