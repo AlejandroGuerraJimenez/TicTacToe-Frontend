@@ -1,0 +1,12 @@
+# Configuración para desplegar en Railway (Docker)
+# https://docs.railway.com/guides/config-as-code
+
+[build]
+builder = "DOCKERFILE"
+
+[deploy]
+# Railway inyecta PORT en runtime; el server Angular SSR lo usa por defecto
+healthcheckPath = "/"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3

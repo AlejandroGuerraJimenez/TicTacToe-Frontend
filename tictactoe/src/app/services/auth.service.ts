@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, of, catchError, map } from 'rxjs';
 import { RealtimeService } from './realtime.service';
@@ -11,8 +11,17 @@ export class AuthService {
   private realtime = inject(RealtimeService);
   private apiUrl = 'http://localhost:3000';
   private currentUserSubject = new BehaviorSubject<any>(null);
+  /** Signal reactivo: la vista se actualiza al cambiar (p. ej. tras checkSession al recargar). */
+  private currentUserSignal = signal<any>(null);
+  /** Lectura del usuario actual vía signal (recomendado en templates). */
+  public readonly currentUser = this.currentUserSignal.asReadonly();
   public currentUser$ = this.currentUserSubject.asObservable();
   private isCheckingSession = false;
+
+  private setUser(user: any): void {
+    this.currentUserSubject.next(user);
+    this.currentUserSignal.set(user);
+  }
 
   register(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, userData, {
@@ -20,7 +29,7 @@ export class AuthService {
     }).pipe(
       tap((response: any) => {
         if (response.success) {
-          this.currentUserSubject.next(response.user);
+          this.setUser(response.user);
           this.realtime.connect();
         }
       })
@@ -56,7 +65,7 @@ export class AuthService {
       map((response: any) => {
         this.isCheckingSession = false;
         if (response.success) {
-          this.currentUserSubject.next(response.user);
+          this.setUser(response.user);
           this.realtime.connect();
           return true;
         }
@@ -64,7 +73,7 @@ export class AuthService {
       }),
       catchError((error) => {
         this.isCheckingSession = false;
-        this.currentUserSubject.next(null);
+        this.setUser(null);
         return of(false);
       })
     );
@@ -81,7 +90,7 @@ export class AuthService {
       withCredentials: true,
     }).pipe(
       tap((res) => {
-        if (res.success && res.user) this.currentUserSubject.next(res.user);
+        if (res.success && res.user) this.setUser(res.user);
       })
     );
   }
@@ -92,11 +101,11 @@ export class AuthService {
     }).pipe(
       tap(() => {
         this.realtime.disconnect();
-        this.currentUserSubject.next(null);
+        this.setUser(null);
       }),
       catchError((err) => {
         this.realtime.disconnect();
-        this.currentUserSubject.next(null);
+        this.setUser(null);
         return of(null);
       })
     );

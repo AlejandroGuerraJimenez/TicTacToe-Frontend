@@ -54,6 +54,33 @@ ng e2e
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
+## Despliegue en Railway (Docker)
+
+El proyecto incluye configuración para desplegar en [Railway](https://railway.app) usando Docker.
+
+### Archivos de configuración
+
+- **`Dockerfile`**: build multi-stage (Node 20); compila la app y ejecuta el server SSR.
+- **`.dockerignore`**: reduce el contexto de build.
+- **`railway.toml`**: opciones de build y deploy en Railway.
+
+### Pasos para desplegar
+
+1. Crea un proyecto en [Railway](https://railway.app) y conecta este repositorio.
+2. En el servicio, configura **Root Directory** en `tictactoe` (carpeta donde están el `Dockerfile` y `railway.toml`).
+3. Railway detectará el `Dockerfile`, construirá la imagen y ejecutará el server. La variable `PORT` se inyecta automáticamente en runtime.
+4. (Opcional) Añade un dominio en la pestaña **Settings** del servicio.
+
+### Probar la imagen en local
+
+```bash
+cd tictactoe
+docker build -t tictactoe-front .
+docker run -p 8080:8080 -e PORT=8080 tictactoe-front
+```
+
+Abre `http://localhost:8080`.
+
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
