@@ -42,16 +42,21 @@ export class GameChatComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadChat();
     this.eventsSub = this.realtime.events$.subscribe((ev) => {
-      if (ev.event === 'chat_message' && ev.data.gameId === this.gameId) {
+      const eventGameId = ev.event === 'chat_message' || ev.event === 'chat_read' ? Number(ev.data.gameId) : null;
+      const isThisGame = eventGameId !== null && eventGameId === Number(this.gameId);
+
+      if (ev.event === 'chat_message' && isThisGame) {
         const msg = ev.data.message;
         if (!this.messages.some((m) => m.id === msg.id)) {
           this.messages = [...this.messages, msg];
+          this.cdr.markForCheck();
           this.cdr.detectChanges();
           this.scrollToBottom();
         }
       }
-      if (ev.event === 'chat_read' && ev.data.gameId === this.gameId) {
-        this.otherLastReadAt = ev.data.readAt;
+      if (ev.event === 'chat_read' && isThisGame) {
+        this.otherLastReadAt = ev.data.readAt ?? null;
+        this.cdr.markForCheck();
         this.cdr.detectChanges();
       }
     });
