@@ -22,7 +22,7 @@ WORKDIR /app
 
 # Solo lo necesario para ejecutar el server SSR
 COPY --from=build /app/dist/tictactoe ./dist/tictactoe
-COPY --from=build /app/package.json package-lock.json* ./
+COPY --from=build /app/package.json /app/package-lock.json ./
 
 # Dependencias de producción para el server (express está en dependencies)
 RUN npm ci --omit=dev
