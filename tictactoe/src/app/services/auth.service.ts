@@ -23,12 +23,19 @@ export class AuthService {
     this.currentUserSignal.set(user);
   }
 
+  private saveToken(token: string | undefined): void {
+    if (typeof sessionStorage === 'undefined') return;
+    if (token) sessionStorage.setItem('token', token);
+    else sessionStorage.removeItem('token');
+  }
+
   register(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, userData, {
       withCredentials: true,
     }).pipe(
       tap((response: any) => {
         if (response.success) {
+          this.saveToken(response.token);
           this.setUser(response.user);
           this.realtime.connect();
         }
@@ -42,6 +49,7 @@ export class AuthService {
     }).pipe(
       tap((response: any) => {
         if (response.success) {
+          this.saveToken(response.token);
           this.currentUserSubject.next(response.user);
           this.realtime.connect();
         }
@@ -100,10 +108,12 @@ export class AuthService {
       withCredentials: true,
     }).pipe(
       tap(() => {
+        this.saveToken(undefined);
         this.realtime.disconnect();
         this.setUser(null);
       }),
       catchError((err) => {
+        this.saveToken(undefined);
         this.realtime.disconnect();
         this.setUser(null);
         return of(null);
