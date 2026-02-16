@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class FriendsService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/friends';
+  private apiUrl = 'https://tictactoe-backend-production-8a7e.up.railway.app';
 
   getFriends(): Observable<any> {
     return this.http.get(`${this.apiUrl}`, { withCredentials: true });
